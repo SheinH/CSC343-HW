@@ -1,0 +1,67 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_TEXTIO.ALL;
+use std.textio.all;
+
+entity tb_3x8_decoder is
+end tb_3x8_decoder;
+
+architecture test of tb_3x8_decoder is
+    signal i2 :  STD_LOGIC;
+    signal i1 :  STD_LOGIC;
+    signal i0 :  STD_LOGIC;
+    signal y7 :  STD_LOGIC;
+    signal y6 :  STD_LOGIC;
+    signal y5 :  STD_LOGIC;
+    signal y4 :  STD_LOGIC;
+    signal y3 :  STD_LOGIC;
+    signal y2 :  STD_LOGIC;
+    signal y1 :  STD_LOGIC;
+    signal y0 :  STD_LOGIC;
+
+    component lab_assign_1
+	Port
+	(
+		i2 :  IN  STD_LOGIC;
+		i1 :  IN  STD_LOGIC;
+		i0 :  IN  STD_LOGIC;
+		y7 :  OUT  STD_LOGIC;
+		y6 :  OUT  STD_LOGIC;
+		y5 :  OUT  STD_LOGIC;
+		y4 :  OUT  STD_LOGIC;
+		y3 :  OUT  STD_LOGIC;
+		y2 :  OUT  STD_LOGIC;
+		y1 :  OUT  STD_LOGIC;
+		y0 :  OUT  STD_LOGIC
+	);
+    end component;
+
+begin
+    uut: lab_assign_1 port map(i2, i1, i0, y7, y6, y5, y4, y3, y2, y1,y0);
+    PROCESS
+    BEGIN
+        i2 <= '0';
+        i1 <= '0';
+        i0 <= '0';
+        WAIT for 10 ns;
+        i0 <= '1';
+        WAIT for 10 ns;
+        i1 <= '1';
+        i0 <= '0';
+        WAIT for 10 ns;
+        i0 <= '1';
+        WAIT for 10 ns;
+        i2 <= '1';
+        i1 <= '0';
+        i0 <= '0';
+        WAIT for 10 ns;
+        i0 <= '1';
+        WAIT for 10 ns;
+        i1 <= '1';
+        i0 <= '0';
+        WAIT for 10 ns;
+        i0 <= '1';
+        WAIT for 10 ns;
+    END PROCESS;
+
+end test;
