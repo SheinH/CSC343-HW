@@ -1,0 +1,167 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_TEXTIO.ALL;
+use std.textio.all;
+
+entity tb_8x3_p_encoder is
+end tb_8x3_p_encoder;
+
+architecture test of tb_8x3_p_encoder is
+    signal i1 : STD_LOGIC;
+    signal i2 : STD_LOGIC;
+    signal i3 : STD_LOGIC;
+    signal i4 : STD_LOGIC;
+    signal i5 : STD_LOGIC;
+    signal i6 : STD_LOGIC;
+    signal i7 : STD_LOGIC;
+    signal y2 : STD_LOGIC;
+    signal y1 : STD_LOGIC;
+    signal y0 : STD_LOGIC;
+
+    component \8x3_p_enc\
+        Port ( i1 : in STD_LOGIC;
+               i2 : in STD_LOGIC;
+               i3 : in STD_LOGIC;
+               i4 : in STD_LOGIC;
+               i5 : in STD_LOGIC;
+               i6 : in STD_LOGIC;
+               i7 : in STD_LOGIC;
+               y2 : out STD_LOGIC;
+               y1 : out STD_LOGIC;
+	       y0 : out STD_LOGIC);
+    end component;
+
+begin
+    uut: \8x3_p_enc\ port map(i1, i2, i3, i4, i5, i6, i7, y2, y1, y0);
+    PROCESS
+    BEGIN
+	-- No inputs active
+        i1 <= '0';
+        i2 <= '0';
+        i3 <= '0';
+        i4 <= '0';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- i1 active
+        i1 <= '1';
+        i2 <= '0';
+        i3 <= '0';
+        i4 <= '0';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- i2 active
+        i1 <= '0';
+        i2 <= '1';
+        i3 <= '0';
+        i4 <= '0';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- i3 active
+        i1 <= '0';
+        i2 <= '0';
+        i3 <= '1';
+        i4 <= '0';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- i4 active
+        i1 <= '0';
+        i2 <= '0';
+        i3 <= '0';
+        i4 <= '1';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- i5 active
+        i1 <= '0';
+        i2 <= '0';
+        i3 <= '0';
+        i4 <= '0';
+        i5 <= '1';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- i6 active
+        i1 <= '0';
+        i2 <= '0';
+        i3 <= '0';
+        i4 <= '0';
+        i5 <= '0';
+        i6 <= '1';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- i7 active
+        i1 <= '0';
+        i2 <= '0';
+        i3 <= '0';
+        i4 <= '0';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '1';
+        WAIT for 20 ns;
+        -- multiple active, output should be: (Highest priority, i7)
+        i1 <= '0';
+        i2 <= '0';
+        i3 <= '1';
+        i4 <= '0';
+        i5 <= '1';
+        i6 <= '0';
+        i7 <= '1';
+        WAIT for 20 ns;
+        -- multiple active, output should be: (Highest priority, i6)
+        i1 <= '1';
+        i2 <= '1';
+        i3 <= '1';
+        i4 <= '1';
+        i5 <= '0';
+        i6 <= '1';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- multiple active, output should be: (Highest priority, i5)
+        i1 <= '1';
+        i2 <= '1';
+        i3 <= '1';
+        i4 <= '1';
+        i5 <= '1';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- multiple active, output should be: (Highest priority, i4)
+        i1 <= '1';
+        i2 <= '1';
+        i3 <= '1';
+        i4 <= '1';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- multiple active, output should be: (Highest priority, i3)
+        i1 <= '1';
+        i2 <= '1';
+        i3 <= '1';
+        i4 <= '0';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+        -- multiple active, output should be: (Highest priority, i2)
+        i1 <= '1';
+        i2 <= '1';
+        i3 <= '0';
+        i4 <= '0';
+        i5 <= '0';
+        i6 <= '0';
+        i7 <= '0';
+        WAIT for 20 ns;
+
+    END PROCESS;
+
+end test;
