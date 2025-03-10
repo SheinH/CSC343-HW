@@ -1,0 +1,97 @@
+-- Copyright (C) 2018  Intel Corporation. All rights reserved.
+-- Your use of Intel Corporation's design tools, logic functions 
+-- and other software and tools, and its AMPP partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Intel Program License 
+-- Subscription Agreement, the Intel Quartus Prime License Agreement,
+-- the Intel FPGA IP License Agreement, or other applicable license
+-- agreement, including, without limitation, that your use is for
+-- the sole purpose of programming logic devices manufactured by
+-- Intel and sold by Intel or its authorized distributors.  Please
+-- refer to the applicable agreement for further details.
+
+-- PROGRAM		"Quartus Prime"
+-- VERSION		"Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition"
+-- CREATED		"Sat Mar 08 02:58:34 2025"
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.all; 
+
+LIBRARY work;
+
+ENTITY \8x3_p_enc\ IS 
+	PORT
+	(
+		i2 :  IN  STD_LOGIC;
+		i1 :  IN  STD_LOGIC;
+		i3 :  IN  STD_LOGIC;
+		i4 :  IN  STD_LOGIC;
+		i5 :  IN  STD_LOGIC;
+		i6 :  IN  STD_LOGIC;
+		i7 :  IN  STD_LOGIC;
+		y2 :  OUT  STD_LOGIC;
+		y1 :  OUT  STD_LOGIC;
+		y0 :  OUT  STD_LOGIC
+	);
+END \8x3_p_enc\;
+
+ARCHITECTURE bdf_type OF \8x3_p_enc\ IS 
+
+SIGNAL	SYNTHESIZED_WIRE_0 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_1 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_15 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_16 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_6 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_8 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_9 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_10 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_17 :  STD_LOGIC;
+
+
+BEGIN 
+
+
+
+y2 <= i7 OR i5 OR i4 OR i6;
+
+
+y1 <= i7 OR SYNTHESIZED_WIRE_0 OR SYNTHESIZED_WIRE_1 OR i6;
+
+
+SYNTHESIZED_WIRE_10 <= SYNTHESIZED_WIRE_15 AND i5;
+
+
+SYNTHESIZED_WIRE_15 <= NOT(i6);
+
+
+
+SYNTHESIZED_WIRE_8 <= i3 AND SYNTHESIZED_WIRE_16 AND SYNTHESIZED_WIRE_15;
+
+
+SYNTHESIZED_WIRE_9 <= SYNTHESIZED_WIRE_15 AND SYNTHESIZED_WIRE_6 AND SYNTHESIZED_WIRE_16 AND i1;
+
+
+SYNTHESIZED_WIRE_6 <= NOT(i2);
+
+
+
+y0 <= i7 OR SYNTHESIZED_WIRE_8 OR SYNTHESIZED_WIRE_9 OR SYNTHESIZED_WIRE_10;
+
+
+SYNTHESIZED_WIRE_0 <= SYNTHESIZED_WIRE_17 AND SYNTHESIZED_WIRE_16 AND i3;
+
+
+SYNTHESIZED_WIRE_16 <= NOT(i4);
+
+
+
+SYNTHESIZED_WIRE_17 <= NOT(i5);
+
+
+
+SYNTHESIZED_WIRE_1 <= SYNTHESIZED_WIRE_17 AND SYNTHESIZED_WIRE_16 AND i2;
+
+
+END bdf_type;

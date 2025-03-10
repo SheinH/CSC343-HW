@@ -3,7 +3,8 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{hyperref}
-\usepackage{minted}
+\usepackage[outputdir=../]{minted}
+% for the above code thank the increadble StackExchange forum https://tex.stackexchange.com/questions/531738/minted-environment-not-working-in-overleaf
 
 \begin{document}
 
@@ -37,11 +38,18 @@ In this multiplexer design, we select one of the eight inputs, $I_{0}$ through $
 \subsubsection{Circut Design}
 In order to implement the 8x1 multiplexer, we created this circuit design in Intel Quartus Prime.
 This circuit was then compiled into VHDL and imported into ModelSim in order to simulate and test our design. \\
-\includegraphics[width=\textwidth]{8x1multiplexer.png}
+
+\subsection{Functionality and Specifications}
+\begin{figure}[h]
+\caption{8x1 multiplexer}
+\centering
+\includegraphics[width=\textwidth]{./diagrams/8x1multiplexer.png}
+\end{figure}
+
 \clearpage
 \subsubsection{VHDL Code}
 I also redesigned this multiplexer in VHDL using behavioral modeling.
-\begin{minted}{vhdl}
+\begin{minted}[linenos]{vhdl}
     library IEEE;
     use IEEE.std_logic_1164.all;
     
@@ -275,24 +283,161 @@ END test;
 \end{minted}
 \includegraphics[width=\textwidth]{mux_behavioral.png}
 \clearpage
+
+
 \section{Exercise B: 1x8 De-Multiplexer Using 1x4 and 1x2 De-Multiplexers}
 \subsection{Objective}
 
 \subsection{Functionality and Specifications}
 
 \subsection{Simulation}
-
 \clearpage
+%-------------------- 3x8 decoder begin --------------------
 \section{Exercise C: 3-to-8 Decoder}
 \subsection{Objective}
+The purpose of this exercise was to create a 3x8 decoder circuit from its respective combinational logic. Now having compiled and generated the relevant VHDL for the circuit one was able to simulate the circuit in action.
 
 \subsection{Functionality and Specifications}
 
-\subsection{Simulation}
+Here we want to describe the combinational logic functions (Boolean equations, if applicable)
 
+\begin{figure}[h]
+\caption{3x8 decoder}
+\includegraphics[width=\textwidth]{./diagrams/3x8_decoder.png}
+\end{figure}
+\subsubsection{VHDL Code generated from the design file}
+\begin{minted}{vhdl}
+    LIBRARY ieee;
+    USE ieee.std_logic_1164.all;
+
+    LIBRARY work;
+
+    ENTITY lab_assign_1 IS
+    	PORT
+    	(
+    		i2 :  IN  STD_LOGIC;
+    		i1 :  IN  STD_LOGIC;
+    		i0 :  IN  STD_LOGIC;
+    		y7 :  OUT  STD_LOGIC;
+    		y6 :  OUT  STD_LOGIC;
+    		y5 :  OUT  STD_LOGIC;
+    		y4 :  OUT  STD_LOGIC;
+    		y3 :  OUT  STD_LOGIC;
+    		y2 :  OUT  STD_LOGIC;
+    		y1 :  OUT  STD_LOGIC;
+    		y0 :  OUT  STD_LOGIC
+    	);
+    END lab_assign_1;
+
+    ARCHITECTURE bdf_type OF lab_assign_1 IS
+
+    SIGNAL	SYNTHESIZED_WIRE_12 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_13 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_14 :  STD_LOGIC;
+
+
+    BEGIN
+
+    y7 <= i2 AND i1 AND i0;
+    y6 <= i2 AND i1 AND SYNTHESIZED_WIRE_12;
+
+    SYNTHESIZED_WIRE_12 <= NOT(i0);
+    y5 <= i2 AND SYNTHESIZED_WIRE_13 AND i0;
+    y4 <= i2 AND SYNTHESIZED_WIRE_12 AND SYNTHESIZED_WIRE_13;
+    y3 <= SYNTHESIZED_WIRE_14 AND i0 AND i1;
+    y2 <= SYNTHESIZED_WIRE_14 AND i1 AND SYNTHESIZED_WIRE_12;
+    y1 <= i0 AND SYNTHESIZED_WIRE_13 AND SYNTHESIZED_WIRE_14;
+    y0 <= SYNTHESIZED_WIRE_12 AND SYNTHESIZED_WIRE_13 AND SYNTHESIZED_WIRE_14;
+
+    SYNTHESIZED_WIRE_14 <= NOT(i2);
+    SYNTHESIZED_WIRE_13 <= NOT(i1);
+    END bdf_type;
+
+\end{minted}
+
+\subsubsection{VHDL code for Test bench}
+\begin{minted}{vhdl}
+    library IEEE;
+    use IEEE.STD_LOGIC_1164.ALL;
+    use IEEE.STD_LOGIC_TEXTIO.ALL;
+    use std.textio.all;
+
+    entity tb_3x8_decoder is
+    end tb_3x8_decoder;
+
+    architecture test of tb_3x8_decoder is
+        signal i2 :  STD_LOGIC;
+        signal i1 :  STD_LOGIC;
+        signal i0 :  STD_LOGIC;
+        signal y7 :  STD_LOGIC;
+        signal y6 :  STD_LOGIC;
+        signal y5 :  STD_LOGIC;
+        signal y4 :  STD_LOGIC;
+        signal y3 :  STD_LOGIC;
+        signal y2 :  STD_LOGIC;
+        signal y1 :  STD_LOGIC;
+        signal y0 :  STD_LOGIC;
+
+        component lab_assign_1
+    	Port
+    	(
+    		i2 :  IN  STD_LOGIC;
+    		i1 :  IN  STD_LOGIC;
+    		i0 :  IN  STD_LOGIC;
+    		y7 :  OUT  STD_LOGIC;
+    		y6 :  OUT  STD_LOGIC;
+    		y5 :  OUT  STD_LOGIC;
+    		y4 :  OUT  STD_LOGIC;
+    		y3 :  OUT  STD_LOGIC;
+    		y2 :  OUT  STD_LOGIC;
+    		y1 :  OUT  STD_LOGIC;
+    		y0 :  OUT  STD_LOGIC
+    	);
+        end component;
+
+    begin
+        uut: lab_assign_1 port map(i2, i1, i0, y7, y6, y5, y4, y3, y2, y1,y0);
+        PROCESS
+        BEGIN
+            i2 <= '0';
+            i1 <= '0';
+            i0 <= '0';
+            WAIT for 10 ns;
+            i0 <= '1';
+            WAIT for 10 ns;
+            i1 <= '1';
+            i0 <= '0';
+            WAIT for 10 ns;
+            i0 <= '1';
+            WAIT for 10 ns;
+            i2 <= '1';
+            i1 <= '0';
+            i0 <= '0';
+            WAIT for 10 ns;
+            i0 <= '1';
+            WAIT for 10 ns;
+            i1 <= '1';
+            i0 <= '0';
+            WAIT for 10 ns;
+            i0 <= '1';
+            WAIT for 10 ns;
+        END PROCESS;
+
+    end test;
+\end{minted}
+
+\subsection{Simulation}
+\begin{figure}[h]
+\caption{3x8 decoder wave simulation}
+\centering
+\includegraphics[width=\textwidth]{./diagrams/3x8_simulation.png}
+\end{figure}
+%-------------------- 3x8 decoder END --------------------
 \clearpage
+%-------------------- 8x3 p-encoder begin --------------------
 \section{Exercise D: 8-to-3 Priority Encoder}
 \subsection{Objective}
+The purpose of this exercise was to create a 8x3 priority encoder circuit from its respective combinational logic. Now having compiled and generated the relevant VHDL for the circuit one was able to simulate the circuit in action. Thus resulting in a better understanding of designing a 8x3 priority encoder circuit from its respective combinational equation, and testing that created circuit.
 
 \subsection{Functionality and Specifications}
 \[
@@ -303,15 +448,288 @@ Y_0 &= D_7 + \overline{D_7 + D_6}\,D_5 + \overline{D_7 + D_6 + D_5}\,D_3 + \over
 \end{aligned}
 \]
 
-\subsection{Simulation}
+Here we want to describe the combinational logic functions (our equations essentially )
 
+\begin{figure}[h]
+\caption{8x3 priority encoder}
+\centering
+\includegraphics[width=\textwidth]{./diagrams/8x3_penc_design.png}
+\end{figure}
+{VHDL code generated from design file}
+\begin{minted}{vhdl}
+    LIBRARY ieee;
+    USE ieee.std_logic_1164.all;
+
+    LIBRARY work;
+
+    ENTITY \8x3_p_enc\ IS
+    	PORT
+    	(
+    		i2 :  IN  STD_LOGIC;
+    		i1 :  IN  STD_LOGIC;
+    		i3 :  IN  STD_LOGIC;
+    		i4 :  IN  STD_LOGIC;
+    		i5 :  IN  STD_LOGIC;
+    		i6 :  IN  STD_LOGIC;
+    		i7 :  IN  STD_LOGIC;
+    		y2 :  OUT  STD_LOGIC;
+    		y1 :  OUT  STD_LOGIC;
+    		y0 :  OUT  STD_LOGIC
+    	);
+    END \8x3_p_enc\;
+
+    ARCHITECTURE bdf_type OF \8x3_p_enc\ IS
+
+    SIGNAL	SYNTHESIZED_WIRE_0 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_1 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_15 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_16 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_6 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_8 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_9 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_10 :  STD_LOGIC;
+    SIGNAL	SYNTHESIZED_WIRE_17 :  STD_LOGIC;
+
+
+    BEGIN
+
+
+
+    y2 <= i7 OR i5 OR i4 OR i6;
+
+
+    y1 <= i7 OR SYNTHESIZED_WIRE_0 OR SYNTHESIZED_WIRE_1 OR i6;
+
+
+    SYNTHESIZED_WIRE_10 <= SYNTHESIZED_WIRE_15 AND i5;
+
+
+    SYNTHESIZED_WIRE_15 <= NOT(i6);
+
+
+
+    SYNTHESIZED_WIRE_8 <= i3 AND SYNTHESIZED_WIRE_16 AND SYNTHESIZED_WIRE_15;
+
+
+    SYNTHESIZED_WIRE_9 <= SYNTHESIZED_WIRE_15 AND SYNTHESIZED_WIRE_6 AND SYNTHESIZED_WIRE_16 AND i1;
+
+
+    SYNTHESIZED_WIRE_6 <= NOT(i2);
+
+
+
+    y0 <= i7 OR SYNTHESIZED_WIRE_8 OR SYNTHESIZED_WIRE_9 OR SYNTHESIZED_WIRE_10;
+
+
+    SYNTHESIZED_WIRE_0 <= SYNTHESIZED_WIRE_17 AND SYNTHESIZED_WIRE_16 AND i3;
+
+
+    SYNTHESIZED_WIRE_16 <= NOT(i4);
+
+
+
+    SYNTHESIZED_WIRE_17 <= NOT(i5);
+
+
+
+    SYNTHESIZED_WIRE_1 <= SYNTHESIZED_WIRE_17 AND SYNTHESIZED_WIRE_16 AND i2;
+
+
+    END bdf_type;
+
+\end{minted}
+
+\subsubsection{VHDL code for Test bench}
+\begin{minted}{vhdl}
+    library IEEE;
+    use IEEE.STD_LOGIC_1164.ALL;
+    use IEEE.STD_LOGIC_TEXTIO.ALL;
+    use std.textio.all;
+
+    entity tb_8x3_p_encoder is
+    end tb_8x3_p_encoder;
+
+    architecture test of tb_8x3_p_encoder is
+        signal i1 : STD_LOGIC;
+        signal i2 : STD_LOGIC;
+        signal i3 : STD_LOGIC;
+        signal i4 : STD_LOGIC;
+        signal i5 : STD_LOGIC;
+        signal i6 : STD_LOGIC;
+        signal i7 : STD_LOGIC;
+        signal y2 : STD_LOGIC;
+        signal y1 : STD_LOGIC;
+        signal y0 : STD_LOGIC;
+
+        component \8x3_p_enc\
+            Port ( i1 : in STD_LOGIC;
+                   i2 : in STD_LOGIC;
+                   i3 : in STD_LOGIC;
+                   i4 : in STD_LOGIC;
+                   i5 : in STD_LOGIC;
+                   i6 : in STD_LOGIC;
+                   i7 : in STD_LOGIC;
+                   y2 : out STD_LOGIC;
+                   y1 : out STD_LOGIC;
+    	       y0 : out STD_LOGIC);
+        end component;
+
+    begin
+        uut: \8x3_p_enc\ port map(i1, i2, i3, i4, i5, i6, i7, y2, y1, y0);
+        PROCESS
+        BEGIN
+    	-- No inputs active
+            i1 <= '0';
+            i2 <= '0';
+            i3 <= '0';
+            i4 <= '0';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- i1 active
+            i1 <= '1';
+            i2 <= '0';
+            i3 <= '0';
+            i4 <= '0';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- i2 active
+            i1 <= '0';
+            i2 <= '1';
+            i3 <= '0';
+            i4 <= '0';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- i3 active
+            i1 <= '0';
+            i2 <= '0';
+            i3 <= '1';
+            i4 <= '0';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- i4 active
+            i1 <= '0';
+            i2 <= '0';
+            i3 <= '0';
+            i4 <= '1';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- i5 active
+            i1 <= '0';
+            i2 <= '0';
+            i3 <= '0';
+            i4 <= '0';
+            i5 <= '1';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- i6 active
+            i1 <= '0';
+            i2 <= '0';
+            i3 <= '0';
+            i4 <= '0';
+            i5 <= '0';
+            i6 <= '1';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- i7 active
+            i1 <= '0';
+            i2 <= '0';
+            i3 <= '0';
+            i4 <= '0';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '1';
+            WAIT for 20 ns;
+            -- multiple active, output should be: (Highest priority, i7)
+            i1 <= '0';
+            i2 <= '0';
+            i3 <= '1';
+            i4 <= '0';
+            i5 <= '1';
+            i6 <= '0';
+            i7 <= '1';
+            WAIT for 20 ns;
+            -- multiple active, output should be: (Highest priority, i6)
+            i1 <= '1';
+            i2 <= '1';
+            i3 <= '1';
+            i4 <= '1';
+            i5 <= '0';
+            i6 <= '1';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- multiple active, output should be: (Highest priority, i5)
+            i1 <= '1';
+            i2 <= '1';
+            i3 <= '1';
+            i4 <= '1';
+            i5 <= '1';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- multiple active, output should be: (Highest priority, i4)
+            i1 <= '1';
+            i2 <= '1';
+            i3 <= '1';
+            i4 <= '1';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- multiple active, output should be: (Highest priority, i3)
+            i1 <= '1';
+            i2 <= '1';
+            i3 <= '1';
+            i4 <= '0';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+            -- multiple active, output should be: (Highest priority, i2)
+            i1 <= '1';
+            i2 <= '1';
+            i3 <= '0';
+            i4 <= '0';
+            i5 <= '0';
+            i6 <= '0';
+            i7 <= '0';
+            WAIT for 20 ns;
+
+        END PROCESS;
+
+    end test;
+
+\end{minted}
+
+
+\subsection{Simulation}
+In this simulation part regarding the (Draw truth tables based on the waveforms.) part we just compare the wave form against the
+\begin{figure}[h]
+\caption{8x3 priority encoder wave graph}
+\centering
+\includegraphics[width=\textwidth]{./diagrams/8x3_p_enc_simulation.png}
+\end{figure}
+
+%-------------------- 8x3 p-encoder END --------------------
 \clearpage
+%-------------------- SR latch & Flip flop begin --------------------
 \section{Exercise E: Set-Reset Flip-Flop \& D Flip-Flop (Positive Edge Trigger)}
 \subsection{Objective}
 
 \subsection{Functionality and Specifications}
 
 \subsection{Simulation}
+%-------------------- SR latch & Flip flop END --------------------
 
 \section{Conclusions}
 
