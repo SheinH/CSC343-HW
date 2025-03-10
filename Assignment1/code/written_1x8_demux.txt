@@ -1,0 +1,49 @@
+-- 1x8 De multiplexer in VHDL
+library IEEE; 
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity written_1x8_demux is
+	Port (
+	     A : in STD_LOGIC;
+             Sel_1x2 : in STD_LOGIC;
+	     Sel_1x4 : in STD_LOGIC_VECTOR (1 downto 0); -- two bit input controlled in the 1x4 demuxes
+	     e7, e6, e5, e4, e3, e2, e1, e0 : out STD_LOGIC
+	);
+	
+	
+end written_1x8_demux;
+
+architecture Behavioral of written_1x8_demux is
+begin
+    process(A, Sel_1x4, Sel_1x2)
+	 begin
+	     e7 <= '0';
+             e6 <= '0';
+	     e5 <= '0';
+	     e4 <= '0';
+	     e3 <= '0'; 
+             e2 <= '0';
+	     e1 <= '0';
+	     e0 <= '0'; -- this is fine since we want to have one large array of outputs, we can partition the selections based off the MSB aka Sel_1x2 bit value
+		  
+		  case Sel_1x2 is
+		       when '0' => -- this is the case where the MSB in our 3 bit input is 0
+                           case Sel_1x4 is
+                               when "00" => e0 <= A;
+                               when "01" => e1 <= A;
+                               when "10" => e2 <= A;
+                               when "11" => e3 <= A;
+                               when others => null;
+                           end case;
+		       when '1' =>  -- this is the case where the MSB in our 3 bit input is 0
+                           case Sel_1x4 is
+                               when "00" => e4 <= A;
+                               when "01" => e5 <= A;
+                               when "10" => e6 <= A;
+                               when "11" => e7 <= A;
+                               when others => null;
+                           end case;
+		       when others => null;
+	          end case;
+	 end process;
+end Behavioral;

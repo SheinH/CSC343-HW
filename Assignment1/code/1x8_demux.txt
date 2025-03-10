@@ -1,0 +1,107 @@
+-- Copyright (C) 2018  Intel Corporation. All rights reserved.
+-- Your use of Intel Corporation's design tools, logic functions 
+-- and other software and tools, and its AMPP partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Intel Program License 
+-- Subscription Agreement, the Intel Quartus Prime License Agreement,
+-- the Intel FPGA IP License Agreement, or other applicable license
+-- agreement, including, without limitation, that your use is for
+-- the sole purpose of programming logic devices manufactured by
+-- Intel and sold by Intel or its authorized distributors.  Please
+-- refer to the applicable agreement for further details.
+
+-- PROGRAM		"Quartus Prime"
+-- VERSION		"Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition"
+-- CREATED		"Sun Mar 09 21:00:44 2025"
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.all; 
+
+LIBRARY work;
+
+ENTITY \1x8_demux\ IS 
+	PORT
+	(
+		A :  IN  STD_LOGIC;
+		S2 :  IN  STD_LOGIC;
+		S1 :  IN  STD_LOGIC;
+		S0 :  IN  STD_LOGIC;
+		d0 :  OUT  STD_LOGIC;
+		d1 :  OUT  STD_LOGIC;
+		d2 :  OUT  STD_LOGIC;
+		d7 :  OUT  STD_LOGIC;
+		d6 :  OUT  STD_LOGIC;
+		d5 :  OUT  STD_LOGIC;
+		d4 :  OUT  STD_LOGIC;
+		d3 :  OUT  STD_LOGIC
+	);
+END \1x8_demux\;
+
+ARCHITECTURE bdf_type OF \1x8_demux\ IS 
+
+SIGNAL	SYNTHESIZED_WIRE_17 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_18 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_19 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_20 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_21 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_22 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_11 :  STD_LOGIC;
+
+
+BEGIN 
+
+
+
+d0 <= SYNTHESIZED_WIRE_17 AND SYNTHESIZED_WIRE_18 AND SYNTHESIZED_WIRE_19;
+
+
+SYNTHESIZED_WIRE_19 <= NOT(S0);
+
+
+
+d7 <= SYNTHESIZED_WIRE_20 AND S1 AND S0;
+
+
+d6 <= SYNTHESIZED_WIRE_20 AND S1 AND SYNTHESIZED_WIRE_21;
+
+
+d5 <= SYNTHESIZED_WIRE_20 AND SYNTHESIZED_WIRE_22 AND S0;
+
+
+d4 <= SYNTHESIZED_WIRE_20 AND SYNTHESIZED_WIRE_22 AND SYNTHESIZED_WIRE_21;
+
+
+SYNTHESIZED_WIRE_18 <= NOT(S1);
+
+
+
+SYNTHESIZED_WIRE_11 <= NOT(S2);
+
+
+
+SYNTHESIZED_WIRE_20 <= A AND S2;
+
+
+SYNTHESIZED_WIRE_17 <= A AND SYNTHESIZED_WIRE_11;
+
+
+d3 <= SYNTHESIZED_WIRE_17 AND S1 AND S0;
+
+
+d2 <= SYNTHESIZED_WIRE_17 AND S1 AND SYNTHESIZED_WIRE_19;
+
+
+SYNTHESIZED_WIRE_22 <= NOT(S1);
+
+
+
+SYNTHESIZED_WIRE_21 <= NOT(S0);
+
+
+
+d1 <= SYNTHESIZED_WIRE_17 AND SYNTHESIZED_WIRE_18 AND S0;
+
+
+END bdf_type;

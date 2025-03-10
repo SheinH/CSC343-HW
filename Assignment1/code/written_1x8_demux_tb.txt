@@ -1,0 +1,51 @@
+library IEEE; 
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_written_1x8_demux is		
+end tb_written_1x8_demux;
+
+architecture test of tb_written_1x8_demux is
+	signal A: STD_LOGIC := '0';
+	signal Sel_1x4: STD_LOGIC_VECTOR (1 downto 0) := "00";
+        signal Sel_1x2: STD_LOGIC;
+        signal e7, e6, e5, e4, e3, e2, e1, e0 : STD_LOGIC;
+
+	component written_1x8_demux
+          Port(A : in STD_LOGIC;
+	       Sel_1x4 : in STD_LOGIC_VECTOR (1 downto 0) := "00";
+               Sel_1x2 : in STD_LOGIC;
+               e7, e6, e5, e4, e3, e2, e1, e0 : out STD_LOGIC);
+	end component;
+begin
+    UUT: written_1x8_demux port map (A, Sel_1x4, Sel_1x2, e7, e6, e5, e4, e3, e2, e1, e0);
+    process
+    begin
+    	A <= '1';
+        Sel_1x2 <= '1'; -- selects 1x4 demux with 4 outputs of d4, d5, d6, d7
+	Sel_1x4 <= "00"; wait for 10 ns;
+	Sel_1x4 <= "01"; wait for 10 ns;
+	Sel_1x4 <= "10"; wait for 10 ns;
+	Sel_1x4 <= "11"; wait for 10 ns;
+
+        Sel_1x2 <= '0'; -- selects 1x4 demux with 4 outputs of d0, d1, d2, d3
+	Sel_1x4 <= "00"; wait for 10 ns;
+	Sel_1x4 <= "01"; wait for 10 ns;
+	Sel_1x4 <= "10"; wait for 10 ns;
+	Sel_1x4 <= "11"; wait for 10 ns;
+
+    	A <= '0';
+        Sel_1x2 <= '1'; -- selects 1x4 demux with 4 outputs of d4, d5, d6, d7
+	Sel_1x4 <= "00"; wait for 10 ns;
+	Sel_1x4 <= "01"; wait for 10 ns;
+	Sel_1x4 <= "10"; wait for 10 ns;
+	Sel_1x4 <= "11"; wait for 10 ns;
+
+        Sel_1x2 <= '0'; -- selects 1x4 demux with 4 outputs of d0, d1, d2, d3
+	Sel_1x4 <= "00"; wait for 10 ns;
+	Sel_1x4 <= "01"; wait for 10 ns;
+	Sel_1x4 <= "10"; wait for 10 ns;
+	Sel_1x4 <= "11"; wait for 10 ns;
+
+    	wait;
+    end process;
+end test;

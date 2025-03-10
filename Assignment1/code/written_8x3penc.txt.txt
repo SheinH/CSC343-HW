@@ -1,0 +1,30 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity written_8x3_penc is
+    Port ( I : in  STD_LOGIC_VECTOR(7 downto 0);  --
+           Y : out  STD_LOGIC_VECTOR(2 downto 0); 
+           V : out STD_LOGIC                     
+         );
+end written_8x3_penc;
+
+architecture Behavioral of written_8x3_penc is
+begin
+    process(I)
+    begin
+        V <= '0';
+        Y <= "000";
+       
+        case I is
+            when "10000000" => Y <= "111"; V <= '1';
+            when "01000000" => Y <= "110"; V <= '1';
+            when "00100000" => Y <= "101"; V <= '1';
+            when "00010000" => Y <= "100"; V <= '1';
+            when "00001000" => Y <= "011"; V <= '1';
+            when "00000100" => Y <= "010"; V <= '1';
+            when "00000010" => Y <= "001"; V <= '1';
+            when "00000001" => Y <= "000"; V <= '1';
+            when others => V <= '0'; -- no valid input passed!!!
+        end case;
+    end process;
+end Behavioral;

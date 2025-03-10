@@ -1,0 +1,83 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_TEXTIO.ALL;
+use std.textio.all;
+
+entity tb_1x8_demux is
+end tb_1x8_demux;
+
+architecture test of tb_1x8_demux is
+    signal A  : STD_LOGIC;
+    signal s2 : STD_LOGIC; --3 bit wide selector, MSB chooses which 1x4 demux we go to 
+    signal s1 : STD_LOGIC; --3 bit wide selector, remaining bits select output 
+    signal s0 : STD_LOGIC; --3 bit wide selector, remaining bits select output
+    signal d7 : STD_LOGIC;
+    signal d6 : STD_LOGIC;
+    signal d5 : STD_LOGIC;
+    signal d4 : STD_LOGIC;
+    signal d3 : STD_LOGIC;
+    signal d2 : STD_LOGIC;
+    signal d1 : STD_LOGIC;
+    signal d0 : STD_LOGIC;
+
+    component \1x8_demux\
+        Port ( A : in STD_LOGIC;
+               s2, s1, s0 : in STD_LOGIC;
+               d7, d6, d5, d4, d3, d2, d1, d0 : out STD_LOGIC);
+    end component;
+
+begin
+    uut: \1x8_demux\ port map(A, s2, s1, s0, d7, d6, d5, d4, d3, d2, d1, d0);
+    PROCESS
+    BEGIN
+        -- Tests with A = 1, and 1x4 demux with outputs d7, d6, d5, d4
+        A <= '1';
+        s2 <= '1';
+        s1 <= '0';
+        s0 <= '0';
+        WAIT for 10 ns;
+        A <= '1';
+        s2 <= '1';
+        s1 <= '0';
+        s0 <= '1';
+        WAIT for 10 ns;
+        A <= '1';
+        s2 <= '1';
+        s1 <= '1';
+        s0 <= '0';
+        WAIT for 10 ns;
+        A <= '1';
+        s2 <= '1';
+        s1 <= '1';
+        s0 <= '1';
+        -- Tests with A = 1, and 1x4 demux with outputs d3, d2, d1, d0
+        WAIT for 10 ns;
+        A <= '1';
+        s2 <= '0';
+        s1 <= '0';
+        s0 <= '0';
+        WAIT for 10 ns;
+        A <= '1';
+        s2 <= '0';
+        s1 <= '0';
+        s0 <= '1';
+        WAIT for 10 ns;
+        A <= '1';
+        s2 <= '0';
+        s1 <= '1';
+        s0 <= '0';
+        WAIT for 10 ns;
+        A <= '1';
+        s2 <= '0';
+        s1 <= '1';
+        s0 <= '1';
+        WAIT for 10 ns;
+        --Test with A = 0, all outputs should be 0 and no 1x4 selected, essentially stopping at the 1x2 demux
+        A <= '0';
+        s2 <= '0';
+        s1 <= '1';
+        s0 <= '1';
+        WAIT for 10 ns;
+    END PROCESS;
+
+end test;
