@@ -3,7 +3,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{hyperref}
-\usepackage[outputdir=../]{minted}
+\usepackage{minted}
 % for the above code thank the increadble StackExchange forum https://tex.stackexchange.com/questions/531738/minted-environment-not-working-in-overleaf
 
 \begin{document}
@@ -39,7 +39,6 @@ In this multiplexer design, we select one of the eight inputs, $I_{0}$ through $
 In order to implement the 8x1 multiplexer, we created this circuit design in Intel Quartus Prime.
 This circuit was then compiled into VHDL and imported into ModelSim in order to simulate and test our design. \\
 
-\subsection{Functionality and Specifications}
 \begin{figure}[h]
 \caption{8x1 multiplexer}
 \centering
@@ -72,7 +71,7 @@ I also redesigned this multiplexer in VHDL using behavioral modeling.
                  I(5) when "101",
                  I(6) when "110",
                  I(7) when "111",
-                 '0'    when others;  -- Default case if needed
+                 '0'    when others;
     end Behavioral;
 \end{minted}
 \clearpage
@@ -196,7 +195,13 @@ END test;
 \end{minted}
 This code selects inputs 0 through 7 and toggles them while they are selected to show that the output corresponds to the selected input.
 
-\includegraphics[width=\textwidth]{mux_structural.png}
+
+\begin{figure}[h]
+\caption{Output for Structural Multiplexer Test Bench}
+\centering
+\includegraphics[width=\textwidth]{./diagrams/mux_structural.png}
+\end{figure}
+
 \clearpage
 \subsubsection{Behavioral Model Test Bench}
 I also wrote test bench code for the behavioral model multiplexer. This code was essentially the same as the previous test bench for the structural model. The only difference is that the inputs and the select signals were vectors.
@@ -281,7 +286,12 @@ BEGIN
     END PROCESS;
 END test;
 \end{minted}
-\includegraphics[width=\textwidth]{mux_behavioral.png}
+
+\begin{figure}[h]
+\caption{Output for Behavioral Multiplexer Test Bench}
+\centering
+\includegraphics[width=\textwidth]{./diagrams/mux_behavioral.png}
+\end{figure}
 \clearpage
 
 
@@ -725,12 +735,258 @@ In this simulation part regarding the (Draw truth tables based on the waveforms.
 %-------------------- SR latch & Flip flop begin --------------------
 \section{Exercise E: Set-Reset Flip-Flop \& D Flip-Flop (Positive Edge Trigger)}
 \subsection{Objective}
-
+Up until now we've modeled both the set reset flip-flop and the D flip-flop using logic gates. The goal of this section was to instead model both flip-flops behaviorally in VHDL.
 \subsection{Functionality and Specifications}
+\subsubsection{Set-Reset Flip-Flop Truth Table}
+The following truth table describes the behavior of our SR flip-flop.
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        CLK & R & S & Q & $\overline{Q}$ \\ 
+        \hline
+        0 & X & X & NO CHG & NO CHG \\ 
+        1 & X & X & NO CHG & NO CHG \\ 
+        $\downarrow$ & X & X & NO CHG & NO CHG \\ 
+        $\uparrow$ & 0 & 0 & NO CHG & NO CHG \\ 
+        $\uparrow$ & 0 & 1 & SET & RESET \\ 
+        $\uparrow$ & 1 & 0 & RESET & SET \\ 
+        $\uparrow$ & 1 & 1 & ILLEGAL & ILLEGAL \\ 
+        \hline
+    \end{tabular}
+\end{center}
+During the rising edge of the clock when the clock transitions from 0 to 1, the outputs \( Q \) and \( \overline{Q} \) update according to these rules:
+\begin{itemize}
+\item If \( S = 1 \), then the flip-flop is set: \( Q \) becomes 1 and \( \overline{Q} \) becomes 0.
+\item If \( R = 1 \), then the flip-flop is reset: \( Q \) becomes 0 and \( \overline{Q} \) becomes 1.
+\item If both \( R \) and \( S \) are inactive (i.e., \( R = 0 \) and \( S = 0 \)), the outputs remain unchanged. 
+\item The condition where both \( R = 1 \) and \( S = 1 \) is considered illegal for this circuit.
+\end{itemize}
+\clearpage
+\subsubsection{D Flip-Flop Truth Table}
 
+
+
+The following truth table illustrates the behavior of the D flip-flop:
+
+\begin{center}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        CLK & D & \(Q\) \\ 
+        \hline
+        0 & X & NO CHG  \\ 
+        1 & X & NO CHG  \\ 
+        \(\downarrow\) & X & NO CHG \\ 
+        \(\uparrow\) & 0 & RESET  \\ 
+        \(\uparrow\) & 1 & SET  \\ 
+        \hline
+    \end{tabular}
+\end{center}
+Here, \(Q\) changes to be equal to \(D\) whenever the clock is rising.
+\subsubsection{Set-Reset Flip-Flop VHDL Code}
+\begin{minted}[linenos]{vhdl}
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+
+ENTITY sr_flip_flop IS
+	PORT (
+		s : IN STD_LOGIC;
+		r : IN STD_LOGIC;
+		clk : IN STD_LOGIC;
+		q : OUT STD_LOGIC;
+		qc : OUT STD_LOGIC
+	);
+END sr_flip_flop;
+
+ARCHITECTURE behavior OF sr_flip_flop IS
+	SIGNAL S_Q : STD_LOGIC;
+BEGIN
+	q <= S_Q;
+	qc <= NOT S_Q;
+	PROCESS (clk)
+	BEGIN
+		IF rising_edge(clk) THEN
+			IF s = '1' AND r = '0' THEN
+				S_Q <= '1';
+			ELSIF s = '0' AND r = '1' THEN
+				S_Q <= '0';
+			END IF;
+		END IF;
+	END PROCESS;
+END behavior;
+\end{minted}
+
+\subsubsection{D Flip-Flop VHDL Code}
+\begin{minted}[linenos]{vhdl}
+    library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity d_flip_flop is
+    Port (
+        D   : in STD_LOGIC;  -- Data input
+        CLK : in STD_LOGIC;  -- Clock signal
+        Q   : out STD_LOGIC  -- Output
+    );
+end d_flip_flop;
+
+architecture Behavioral of d_flip_flop is
+begin
+    process(CLK)
+    begin
+        if rising_edge(CLK) then
+            Q <= D;
+        end if;
+    end process;
+end Behavioral;
+\end{minted}
 \subsection{Simulation}
-%-------------------- SR latch & Flip flop END --------------------
+\subsubsection{Set-Reset Flip-Flop Test Bench}
+The following is the test match code for the set reset flip-flop.
+\begin{minted}[linenos]{vhdl}
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
 
+ENTITY tb_sr_flip_flop IS
+END tb_sr_flip_flop;
+
+ARCHITECTURE testbench OF tb_sr_flip_flop IS
+    SIGNAL S : STD_LOGIC := '0'; -- Signal for data input
+    SIGNAL R : STD_LOGIC := '0'; -- Signal for data input
+    SIGNAL CLK : STD_LOGIC := '0'; -- Clock signal
+    SIGNAL Q : STD_LOGIC; -- Output signal
+    SIGNAL QC : STD_LOGIC; -- Output signal
+BEGIN
+    -- Instantiate the SR Flip-Flop
+    uut : ENTITY work.sr_flip_flop
+        PORT MAP(S, R, CLK, Q, QC);
+
+        -- Clock Generation Process
+        CLK_Process : PROCESS
+        BEGIN
+            WHILE now < 100 ns LOOP -- Limit the clock process to 100 ns
+            CLK <= '0';
+            WAIT FOR 5 ns;
+            CLK <= '1';
+            WAIT FOR 5 ns;
+        END LOOP;
+        WAIT; -- Stops the clock process after 100 ns
+        END PROCESS;
+
+        -- Test Process
+        Stimulus_Process : PROCESS
+        BEGIN
+            R <= '1';
+            WAIT FOR 20 ns;
+            R <= '0';
+            WAIT FOR 20 ns;
+
+            S <= '1';
+            WAIT FOR 20 ns;
+            S <= '0';
+            WAIT FOR 20 ns;
+
+            R <= '1';
+            WAIT FOR 20 ns;
+            R <= '0';
+            WAIT FOR 20 ns;
+
+            WAIT;
+
+    
+        END PROCESS;
+END testbench;
+\end{minted}
+\clearpage
+Here is the output for this code. In the waveform, you can see that the output for Q and QC only get updated on the rising edge of the clock when either S or R are set according to the rules outlined earlier. \\
+\begin{figure}[H]
+\caption{Output for Set-Reset Flip-Flop Test Bench}
+\centering
+\includegraphics[width=\textwidth]{./diagrams/sr_flipflop.png}
+\end{figure}
+
+\subsubsection{D Flip-Flop Test Bench}
+\begin{minted}[linenos]{vhdl}
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_d_flip_flop is
+end tb_d_flip_flop;
+
+architecture Testbench of tb_d_flip_flop is
+    signal D   : STD_LOGIC := '0'; -- Signal for data input
+    signal CLK : STD_LOGIC := '0'; -- Clock signal
+    signal Q   : STD_LOGIC;        -- Output signal
+begin
+    -- Instantiate the D Flip-Flop
+    uut: entity work.d_flip_flop
+        Port Map ( D, CLK, Q );
+
+    -- Clock Generation Process
+    CLK_Process: process
+    begin
+        while now < 100 ns loop  -- Limit the clock process to 100 ns
+            CLK <= '0';
+            wait for 5 ns;
+            CLK <= '1';
+            wait for 5 ns;
+        end loop;
+        wait; -- Stops the clock process after 100 ns
+    end process;
+
+    -- Test Process
+    Stimulus_Process: process
+    begin
+        D <= '1';
+        wait for 20 ns;
+        D <= '0';
+        wait for 20 ns;
+
+        D <= '1';
+        wait for 20 ns;
+        D <= '0';
+        wait for 20 ns;
+
+        D <= '1';
+        wait for 20 ns;
+        D <= '0';
+        wait for 20 ns;
+
+        wait;
+
+    end process;
+end Testbench;
+\end{minted}
+
+This code results in the waveform shown in Figure 9.
+\begin{figure}[H]
+\caption{Output for D Flip-Flop test bench.}
+\centering
+\includegraphics[width=\textwidth]{./diagrams/d_flipflop.png}
+\end{figure}
+Here, the value of Q gets updated to match the value of D whenever the clock rises.
+\newpage
+\subsection{Differences between the Set-Reset Flip-Flop and the D Flip-Flop}
+The D flip-flop is very simple: on a rising clock edge, 
+\[
+Q \gets D.
+\]
+
+In contrast, the SR flip-flop responds on the rising clock edge as follows:
+\begin{itemize}
+    \item If \( S = 1 \), then \( Q = 1 \) and \( \overline{Q} = 0 \).
+    \item If \( R = 1 \), then \( Q = 0 \) and \( \overline{Q} = 1 \).
+    \item If \( S = 0 \) and \( R = 0 \), then \( Q \) remains unchanged.
+\end{itemize}
 \section{Conclusions}
 
+
+We learned about the VHDL language, including data types, input/output/intermediate signals, and its parallel execution model. We observed parallel computation outside processes and sequential operations within processes.
+
+Initially, we struggled with \texttt{when} and \texttt{if} statements, learning through experimentation that \texttt{when} is for outside processes and \texttt{if} for inside processes.  We also learned processes re-evaluate outputs only when specified inputs change.
+
+We recognized that VHDL's standard logic datatype can hold values other than '0' and '1' such as uninitialized, unknown, and 'don't care' states, which can allow the compiler to create more efficient designs.
+
+We also learned the difference between structural vs. behavioral modeling. Structural modeling is akin to wiring components inside of code, while behavioral modeling describes logic for the compiler to implement.
+
+Challenges included ModelSim and Intel Quartus' project structure, making file management cumbersome. ModelSim's file update behavior, requiring manual saving and recompilation unlike IDEs like IntelliJ IDEA, caused inefficiencies and frustration as well.
 \end{document}
